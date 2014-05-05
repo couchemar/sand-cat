@@ -1,3 +1,3 @@
 # SandCat
 
-** TODO: Add description **
+Concatinative style programming in Elixir
