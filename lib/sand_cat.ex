@@ -15,8 +15,7 @@ defmodule SandCat do
   defp is_word(:+), do: {true, &plus/1}
   defp is_word(_), do: false
 
-  defp plus([a|stack]) do
-    [b|stack] = stack
+  defp plus([a, b|stack]) do
     [a + b | stack]
   end
 
