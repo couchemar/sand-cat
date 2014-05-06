@@ -1,6 +1,7 @@
 defmodule SandCat.Words do
+  use SandCat.Core
 
-  def plus([a, b|stack]) do
+  defword :+, [a, b | stack] do
     [a + b | stack]
   end
 
