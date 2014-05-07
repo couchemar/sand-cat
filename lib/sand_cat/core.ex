@@ -15,9 +15,17 @@ defmodule SandCat.Core do
 
   defp do_defword(expr, effect, opts) do
     f_name = expr |> fun_name
+    args_len = length(effect)
     quote do
-      def unquote(f_name)(unquote_splicing([effect])) do
-        unquote(opts[:do])
+      def unquote(f_name)(stack) do
+        {args, rest} = Enum.split(
+          stack, unquote(Macro.escape(args_len))
+        )
+        res = (fn(unquote_splicing([effect])) ->
+                   unquote(opts[:do])
+               end).(args)
+        # TODO: probably replace with [a|rest]
+        res ++ rest
       end
       @words [{unquote(expr), &(__MODULE__.unquote(f_name)/1)}|@words]
     end
@@ -29,7 +37,7 @@ defmodule SandCat.Core do
     (hash <> "_word") |> binary_to_atom
   end
 
-  defmacro __before_compile__(env) do
+  defmacro __before_compile__(_env) do
     quote do
       def words, do: @words
     end
