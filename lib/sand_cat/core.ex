@@ -4,6 +4,8 @@ defmodule SandCat.Core do
     quote do
       import SandCat.Core
       @words []
+
+      @before_compile SandCat.Core
     end
   end
 
@@ -25,6 +27,12 @@ defmodule SandCat.Core do
     word = word |> atom_to_binary
     hash = :crypto.hash(:md5, word) |> :base64.encode
     (hash <> "_word") |> binary_to_atom
+  end
+
+  defmacro __before_compile__(env) do
+    quote do
+      def words, do: @words
+    end
   end
 
 end
