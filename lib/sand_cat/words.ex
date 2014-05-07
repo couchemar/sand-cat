@@ -5,6 +5,6 @@ defmodule SandCat.Words do
     [a + b | stack]
   end
 
-  def words, do: [+: &plus/1]
+  def words, do: @words
 
 end
