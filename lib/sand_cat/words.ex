@@ -6,4 +6,14 @@ defmodule SandCat.Words do
   defword :*, [a, b], do: [b * a]
   defword :/, [a, b], do: [b / a]
 
+  defword :===, [a, b], do: [b === a]
+  defword :!==, [a, b], do: [b !== a]
+  defword :==, [a, b], do: [b == a]
+  defword :!=, [a, b], do: [b != a]
+
+  defword :>, [a, b], do: [b > a]
+  defword :>=, [a, b], do: [b >= a]
+  defword :<, [a, b], do: [b < a]
+  defword :<=, [a, b], do: [b <= a]
+
 end

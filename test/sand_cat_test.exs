@@ -23,5 +23,28 @@ defmodule SandCatTest do
     assert [0.5] == SandCat.run([4, 8, :/])
   end
 
+  test "Comparing" do
+    assert [true] == SandCat.run([10, 10, :===])
+    assert [false] == SandCat.run([10, 11, :===])
+
+    assert [false] == SandCat.run([10, 10, :!==])
+    assert [true] == SandCat.run([10, 11, :!==])
+
+    assert [false] == SandCat.run([10, 10.0, :===])
+    assert [true] == SandCat.run([10.0, 10.0, :===])
+
+    assert [true] == SandCat.run([10, 10.0, :!==])
+    assert [true] == SandCat.run([10.0, 11.0, :!==])
+    assert [false] == SandCat.run([10.0, 10.0, :!==])
+
+    assert [true] == SandCat.run([10, 10.0, :==])
+    assert [true] == SandCat.run([10, 11, :!=])
+
+    assert [true] == SandCat.run([10, 9, :>])
+    assert [true] == SandCat.run([9, 9, :>=])
+
+    assert [true] == SandCat.run([9, 10, :<])
+    assert [true] == SandCat.run([9, 9, :<=])
+  end
 
 end
