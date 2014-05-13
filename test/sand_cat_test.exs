@@ -47,4 +47,10 @@ defmodule SandCatTest do
     assert [true] == SandCat.run([9, 9, :<=])
   end
 
+  test "Quotation call" do
+    assert [3] == SandCat.run([1, [2, :+], :call])
+    assert [6] == SandCat.run([1, [2, :+], :call, [3, :+], :call])
+    assert [12] == SandCat.run([2, [2, :+, 3, :*], :call])
+  end
+
 end

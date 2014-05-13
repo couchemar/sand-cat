@@ -9,8 +9,16 @@ defmodule SandCat.Core do
     end
   end
 
-  defmacro defword(expr, effect, opts) do
-    do_defword(expr, effect, opts)
+  defmacro __before_compile__(_env) do
+    quote do
+      def words, do: @words
+    end
+  end
+
+  defmacro defword(expr, effect, opts), do: do_defword(expr, effect, opts)
+
+  defmacro defspecial(expr, stack, env, opts) do
+    do_defspecial(expr, stack, env, opts)
   end
 
   defp do_defword(expr, effect, opts) do
@@ -31,16 +39,24 @@ defmodule SandCat.Core do
     end
   end
 
+  defp do_defspecial(expr, stack, env, opts) do
+    f_name = expr |> fun_name
+    quote do
+      def unquote(f_name)(s, envi) do
+        (fn(unquote(stack), unquote(env)) ->
+             unquote(opts[:do])
+         end).(s, envi)
+      end
+      @words [{unquote(expr), &(__MODULE__.unquote(f_name)/2)}|@words]
+    end
+  end
+
   defp fun_name(word) do
     word = word |> atom_to_binary
     hash = :crypto.hash(:md5, word) |> :base64.encode
     (hash <> "_word") |> binary_to_atom
   end
 
-  defmacro __before_compile__(_env) do
-    quote do
-      def words, do: @words
-    end
-  end
+
 
 end
