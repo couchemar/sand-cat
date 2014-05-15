@@ -21,6 +21,10 @@ defmodule SandCat.Core do
     do_defspecial(expr, stack, env, opts)
   end
 
+  defmacro defcombo(expr, effect, opts) do
+    do_defcombo(expr, effect, opts)
+  end
+
   defp do_defword(expr, effect, opts) do
     f_name = expr |> fun_name
     args_len = length(effect)
@@ -51,12 +55,25 @@ defmodule SandCat.Core do
     end
   end
 
-  defp fun_name(word) do
-    word = word |> atom_to_binary
-    hash = :crypto.hash(:md5, word) |> :base64.encode
-    (hash <> "_word") |> binary_to_atom
+  alias SandCat, as: SC
+
+  defp do_defcombo(expr, effect, opts) do
+    f_name = expr |> fun_name
+    args_len = length(effect)
+    quote do
+      def unquote(f_name)(stack, env) do
+        args = Enum.take(
+          stack, unquote(Macro.escape(args_len))
+        )
+        (fn(unquote_splicing([effect])) ->
+                   unquote(opts[:do])
+         end).(args) |> List.foldl(stack, fn(a,b) -> SC.add_or_apply(env, a, b) end)
+      end
+      @words [{unquote(expr), &(__MODULE__.unquote(f_name)/2)}|@words]
+    end
   end
 
-
+  defp fun_name(word),
+  do: word |> atom_to_binary |> (&(&1 <> "_word")).() |> binary_to_atom
 
 end

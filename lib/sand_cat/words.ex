@@ -25,4 +25,7 @@ defmodule SandCat.Words do
     |> List.foldr([], fn(a,b) -> SC.add_or_apply(env, a, b) end)
   end
 
+  defcombo :dup, [a], do: [a]
+  defcombo :dup2, [], do: [:dup, :dup]
+
 end
