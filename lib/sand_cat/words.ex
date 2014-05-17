@@ -3,20 +3,20 @@ defmodule SandCat.Words do
 
   alias SandCat, as: SC
 
-  defword :+, [a, b], do: [a + b]
-  defword :-, [a, b], do: [b - a]
-  defword :*, [a, b], do: [b * a]
-  defword :/, [a, b], do: [b / a]
+  defprimitive :+, [a, b], do: [a + b]
+  defprimitive :-, [a, b], do: [b - a]
+  defprimitive :*, [a, b], do: [b * a]
+  defprimitive :/, [a, b], do: [b / a]
 
-  defword :===, [a, b], do: [b === a]
-  defword :!==, [a, b], do: [b !== a]
-  defword :==, [a, b], do: [b == a]
-  defword :!=, [a, b], do: [b != a]
+  defprimitive :===, [a, b], do: [b === a]
+  defprimitive :!==, [a, b], do: [b !== a]
+  defprimitive :==, [a, b], do: [b == a]
+  defprimitive :!=, [a, b], do: [b != a]
 
-  defword :>, [a, b], do: [b > a]
-  defword :>=, [a, b], do: [b >= a]
-  defword :<, [a, b], do: [b < a]
-  defword :<=, [a, b], do: [b <= a]
+  defprimitive :>, [a, b], do: [b > a]
+  defprimitive :>=, [a, b], do: [b >= a]
+  defprimitive :<, [a, b], do: [b < a]
+  defprimitive :<=, [a, b], do: [b <= a]
 
   defspecial :call, stack, env do
     [callable|rest] = stack
@@ -25,7 +25,12 @@ defmodule SandCat.Words do
     |> List.foldr([], fn(a,b) -> SC.add_or_apply(env, a, b) end)
   end
 
-  defcombo :dup, [a], do: [a]
-  defcombo :dup2, [], do: [:dup, :dup]
+  defprimitive :dup, [a], do: [a, a]
+  defword :dup2, [], do: [:dup, :dup]
+
+
+  defprimitive :drop, [_a], do: []
+  defprimitive :swap, [a, b], do: [b, a]
+  defword :dip, [callable, item], do: [:swap, :drop, :call, item]
 
 end

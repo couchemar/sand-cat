@@ -15,17 +15,17 @@ defmodule SandCat.Core do
     end
   end
 
-  defmacro defword(expr, effect, opts), do: do_defword(expr, effect, opts)
+  defmacro defprimitive(expr, effect, opts), do: do_defprimitive(expr, effect, opts)
 
   defmacro defspecial(expr, stack, env, opts) do
     do_defspecial(expr, stack, env, opts)
   end
 
-  defmacro defcombo(expr, effect, opts) do
-    do_defcombo(expr, effect, opts)
+  defmacro defword(expr, effect, opts) do
+    do_defword(expr, effect, opts)
   end
 
-  defp do_defword(expr, effect, opts) do
+  defp do_defprimitive(expr, effect, opts) do
     f_name = expr |> fun_name
     args_len = length(effect)
     quote do
@@ -57,7 +57,7 @@ defmodule SandCat.Core do
 
   alias SandCat, as: SC
 
-  defp do_defcombo(expr, effect, opts) do
+  defp do_defword(expr, effect, opts) do
     f_name = expr |> fun_name
     args_len = length(effect)
     quote do

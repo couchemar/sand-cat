@@ -58,4 +58,16 @@ defmodule SandCatTest do
     assert [4, 4, 4] == SandCat.run([4, :dup2])
   end
 
+  test "Drop" do
+    assert [20] == SandCat.run([20, 30, :drop])
+  end
+
+  test "Swap" do
+    assert [1, 2] == SandCat.run([1, 2, :swap])
+  end
+
+  test "Dip" do
+    assert [30, 40] == SandCat.run([20, 2, 30, [:*], :dip])
+  end
+
 end
