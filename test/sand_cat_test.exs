@@ -68,6 +68,7 @@ defmodule SandCatTest do
 
   test "Dip" do
     assert [30, 40] == SandCat.run([20, 2, 30, [:*], :dip])
+    assert [30, 10] == SandCat.run([20, 2, 30, [:/], :dip])
   end
 
 end
