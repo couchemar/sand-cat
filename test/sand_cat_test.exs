@@ -51,6 +51,7 @@ defmodule SandCatTest do
     assert [3] == SandCat.run([1, [2, :+], :call])
     assert [6] == SandCat.run([1, [2, :+], :call, [3, :+], :call])
     assert [12] == SandCat.run([2, [2, :+, 3, :*], :call])
+    assert [9] == SandCat.run([1, 2, [:+, 3, :*], :call])
   end
 
   test "Dup" do
