@@ -33,11 +33,10 @@ defmodule SandCat.Core do
         {args, rest} = Enum.split(
           stack, unquote(Macro.escape(args_len))
         )
-        res = (fn(unquote_splicing([effect])) ->
+        res = (fn(unquote_splicing([effect |> Enum.reverse])) ->
                    unquote(opts[:do])
                end).(args)
-        # TODO: probably replace with [a|rest]
-        res ++ rest
+        Enum.reverse(res) ++ rest
       end
       @words [{unquote(expr), &(__MODULE__.unquote(f_name)/1)}|@words]
     end
@@ -65,7 +64,7 @@ defmodule SandCat.Core do
         args = Enum.take(
           stack, unquote(Macro.escape(args_len))
         )
-        (fn(unquote_splicing([effect])) ->
+        (fn(unquote_splicing([effect |> Enum.reverse])) ->
                    unquote(opts[:do])
          end).(args) |> List.foldl(stack, fn(a,b) -> SC.add_or_apply(env, a, b) end)
       end
