@@ -4,6 +4,7 @@ defmodule SandCat do
 
   def run(stack) do
     List.foldl(stack, [], fn(a,b) -> add_or_apply(Words.words, a, b) end)
+    |> Enum.reverse
   end
 
   def add_or_apply(env, value, stack) do

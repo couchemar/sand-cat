@@ -3,7 +3,7 @@ defmodule SandCatTest do
 
   test "Base stack" do
     assert [1] == SandCat.run([1])
-    assert [2, 1] == SandCat.run([1, 2])
+    assert [1, 2] == SandCat.run([1, 2])
     assert [3] == SandCat.run([1, 2, :+])
     assert [7] == SandCat.run([1, 2, :+, 4, :+])
     assert [6] == SandCat.run([1, 2, 3, :+, :+])
@@ -64,12 +64,12 @@ defmodule SandCatTest do
   end
 
   test "Swap" do
-    assert [1, 2] == SandCat.run([1, 2, :swap])
+    assert [2, 1] == SandCat.run([1, 2, :swap])
   end
 
   test "Dip" do
-    assert [30, 40] == SandCat.run([20, 2, 30, [:*], :dip])
-    assert [30, 10] == SandCat.run([20, 2, 30, [:/], :dip])
+    assert [40, 30] == SandCat.run([20, 2, 30, [:*], :dip])
+    assert [10, 30] == SandCat.run([20, 2, 30, [:/], :dip])
   end
 
 end
