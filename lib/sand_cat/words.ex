@@ -21,8 +21,7 @@ defmodule SandCat.Words do
   defspecial :call, stack, env do
     [callable|rest] = stack
     callable
-    |> Enum.reverse(rest)
-    |> List.foldr([], fn(a,b) -> SC.add_or_apply(env, a, b) end)
+    |> List.foldl(rest, fn(val, st) -> SC.add_or_apply(env, val, st) end)
   end
 
   defprimitive :dup, [a], do: [a, a]
