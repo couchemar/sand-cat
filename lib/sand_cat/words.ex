@@ -31,4 +31,11 @@ defmodule SandCat.Words do
   defprimitive :swap, [a, b], do: [b, a]
   defword :dip, [item, _quot], do: [:swap, :drop, :call, item]
 
+  defprimitive :if, [condition, true_q, false_q] do
+    case condition do
+      true -> [true_q, :call]
+      false -> [false_q, :call]
+    end
+  end
+
 end

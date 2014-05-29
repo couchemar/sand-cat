@@ -52,11 +52,13 @@ defmodule SandCatTest do
     assert [6] == SandCat.run([1, [2, :+], :call, [3, :+], :call])
     assert [12] == SandCat.run([2, [2, :+, 3, :*], :call])
     assert [9] == SandCat.run([1, 2, [:+, 3, :*], :call])
+    assert [1, 2, 3] == SandCat.run([1, [2, 3], :call])
   end
 
   test "Call in calls" do
     assert [3, 3] == SandCat.run([[3, 3], :call])
     assert [1, 2] == SandCat.run([[[1], :call, 2], :call])
+    assert [1, 2, 3] == SandCat.run([1, [[2, 3], :call], :call])
     assert [3, 2] == SandCat.run([[[1, 2, :+], :call, 2], :call])
     assert [42] == SandCat.run(
         [[[[[[42], :call], :call], :call], :call], :call])
@@ -78,6 +80,13 @@ defmodule SandCatTest do
   test "Dip" do
     assert [40, 30] == SandCat.run([20, 2, 30, [:*], :dip])
     assert [10, 30] == SandCat.run([20, 2, 30, [:/], :dip])
+  end
+
+  test "If" do
+    assert [true, true] == SandCat.run([true, [true, true], [false, false], :if])
+    assert [false, false] == SandCat.run([false, [true, true], [false, false], :if])
+    assert [7] == SandCat.run([1, 2, :<, [4, 3, :+], [false, false], :if])
+    assert [7] == SandCat.run([1, 2, :<, [4, 3, :+], [false, false], :if])
   end
 
 end

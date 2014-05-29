@@ -1,5 +1,7 @@
 defmodule SandCat.Core do
 
+  alias SandCat, as: SC
+
   defmacro __using__(_opts) do
     quote do
       import SandCat.Core
@@ -29,16 +31,15 @@ defmodule SandCat.Core do
     f_name = expr |> fun_name
     args_len = length(effect)
     quote do
-      def unquote(f_name)(stack) do
+      def unquote(f_name)(stack, env) do
         {args, rest} = Enum.split(
           stack, unquote(Macro.escape(args_len))
         )
-        res = (fn(unquote_splicing([effect |> Enum.reverse])) ->
-                   unquote(opts[:do])
-               end).(args)
-        Enum.reverse(res) ++ rest
+        (fn(unquote_splicing([effect |> Enum.reverse])) ->
+             unquote(opts[:do])
+         end).(args) |> List.foldl(rest, fn(val, st) -> SC.add_or_apply(env, val, st) end)
       end
-      @words [{unquote(expr), &(__MODULE__.unquote(f_name)/1)}|@words]
+      @words [{unquote(expr), &(__MODULE__.unquote(f_name)/2)}|@words]
     end
   end
 
@@ -53,8 +54,6 @@ defmodule SandCat.Core do
       @words [{unquote(expr), &(__MODULE__.unquote(f_name)/2)}|@words]
     end
   end
-
-  alias SandCat, as: SC
 
   defp do_defword(expr, effect, opts) do
     f_name = expr |> fun_name
