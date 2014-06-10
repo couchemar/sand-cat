@@ -3,7 +3,11 @@ defmodule SandCat do
   alias SandCat.Words
 
   def run(stack) do
-    List.foldl(stack, [], fn(a,b) -> add_or_apply(Words.words, a, b) end)
+    run(stack, Words.words)
+  end
+
+  def run(stack, vocabulary) do
+    List.foldl(stack, [], fn(a,b) -> add_or_apply(vocabulary, a, b) end)
     |> Enum.reverse
   end
 
