@@ -7,8 +7,16 @@ defmodule SandCat do
   end
 
   def run(stack, vocabulary) do
-    List.foldl(stack, [], fn(a,b) -> add_or_apply(vocabulary, a, b) end)
+    compound([], stack, vocabulary)
     |> Enum.reverse
+  end
+
+  def compound(previous, stack) do
+    compound(previous, stack, Words.words)
+  end
+
+  def compound(previous, stack, vocabulary) do
+    List.foldl(stack, previous, fn(a,b) -> add_or_apply(vocabulary, a, b) end)
   end
 
   def add_or_apply(env, value, stack) do
