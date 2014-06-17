@@ -72,6 +72,6 @@ defmodule SandCat.Core do
   end
 
   defp fun_name(word),
-  do: word |> atom_to_binary |> (&(&1 <> "_word")).() |> binary_to_atom
+  do: word |> Atom.to_string |> (&(&1 <> "_word")).() |> String.to_atom
 
 end
