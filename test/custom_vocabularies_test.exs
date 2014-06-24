@@ -9,9 +9,9 @@ defmodule CustomVocabulariesTest do
   end
 
   test "Custom vocabularies" do
-    assert [9] == SandCat.run([3, 3, :*], Words.words)
-    assert [9] == SandCat.run([3, :square], MathV.words)
-    assert [18] == SandCat.run([3, :square, 2, :*], Words.words ++ MathV.words)
+    assert [9] == SandCat.run([3, 3, :*], Words.words)[:stack]
+    assert [9] == SandCat.run([3, :square], MathV.words)[:stack]
+    assert [18] == SandCat.run([3, :square, 2, :*], Words.words ++ MathV.words)[:stack]
   end
 
 end

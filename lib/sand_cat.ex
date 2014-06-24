@@ -2,13 +2,17 @@ defmodule SandCat do
 
   alias SandCat.Words
 
+  @derive [Access]
+  defstruct stack: [], vocabularies: []
+
+  def new(stack \\ []), do: struct(__MODULE__, stack: stack)
+
   def run(stack) do
     run(stack, Words.words)
   end
 
   def run(stack, vocabulary) do
-    compound([], stack, vocabulary)
-    |> Enum.reverse
+    compound(struct(__MODULE__), stack, vocabulary)
   end
 
   def compound(previous, stack) do
@@ -16,7 +20,8 @@ defmodule SandCat do
   end
 
   def compound(previous, stack, vocabulary) do
-    List.foldl(stack, previous, fn(a,b) -> add_or_apply(vocabulary, a, b) end)
+    new_stack =  List.foldl(stack, previous[:stack], fn(a,b) -> add_or_apply(vocabulary, a, b) end)
+    put_in(previous[:stack], new_stack)
   end
 
   def add_or_apply(env, value, stack) do
