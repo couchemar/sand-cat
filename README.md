@@ -2,3 +2,5 @@
 # SandCat
 
 Concatinative style programming in Elixir
+
+For internal usage in [Lime](https://github.com/couchemar/lime) 
