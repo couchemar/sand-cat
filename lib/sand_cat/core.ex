@@ -13,11 +13,13 @@ defmodule SandCat.Core do
 
   defmacro __before_compile__(_env) do
     quote do
-      def words, do: @words
+      def words, do: {__MODULE__, @words}
     end
   end
 
-  defmacro defprimitive(expr, effect, opts), do: do_defprimitive(expr, effect, opts)
+  defmacro defprimitive(expr, effect, opts) do
+    do_defprimitive(expr, effect, opts)
+  end
 
   defmacro defspecial(expr, stack, env, opts) do
     do_defspecial(expr, stack, env, opts)
@@ -31,15 +33,17 @@ defmodule SandCat.Core do
     f_name = expr |> fun_name
     args_len = length(effect)
     quote do
-      def unquote(f_name)(stack, env) do
+      def unquote(f_name)(ctx) do
         {args, rest} = Enum.split(
-          stack, unquote(Macro.escape(args_len))
+          ctx[:stack], unquote(Macro.escape(args_len))
         )
+        new_ctx = put_in(ctx[:stack], rest)
         (fn(unquote_splicing([effect |> Enum.reverse])) ->
              unquote(opts[:do])
-         end).(args) |> List.foldl(rest, fn(val, st) -> SC.add_or_apply(env, val, st) end)
+         end).(args) |> List.foldl(
+           new_ctx, fn(val, ctx) -> SC.add_or_apply(val, ctx) end)
       end
-      @words [{unquote(expr), &(__MODULE__.unquote(f_name)/2)}|@words]
+      @words [{unquote(expr), &(__MODULE__.unquote(f_name)/1)}|@words]
     end
   end
 
