@@ -18,10 +18,11 @@ defmodule SandCat.Words do
   defprimitive :<, [a, b], do: [a < b]
   defprimitive :<=, [a, b], do: [a <= b]
 
-  defspecial :call, stack, env do
-    [callable|rest] = stack
+  defspecial :call, ctx do
+    [callable|rest] = ctx[:stack]
+    new_ctx = put_in(ctx[:stack], rest)
     callable
-    |> List.foldl(rest, fn(val, st) -> SC.add_or_apply(env, val, st) end)
+    |> List.foldl(new_ctx, fn(val, ctx) -> SC.add_or_apply(val, ctx) end)
   end
 
   defprimitive :dup, [a], do: [a, a]

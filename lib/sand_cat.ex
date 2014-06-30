@@ -42,7 +42,7 @@ defmodule SandCat do
     put_in(ctx[:stack], [word|stack])
   end
 
-  defp search_word(word, []), do: false
+  defp search_word(_word, []), do: false
   defp search_word(word, [{_name, vocab}|vocabs]) do
     case List.keyfind(vocab, word, 0) do
       {^word, f} ->

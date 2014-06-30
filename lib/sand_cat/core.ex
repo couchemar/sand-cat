@@ -21,8 +21,8 @@ defmodule SandCat.Core do
     do_defprimitive(expr, effect, opts)
   end
 
-  defmacro defspecial(expr, stack, env, opts) do
-    do_defspecial(expr, stack, env, opts)
+  defmacro defspecial(expr, ctx, opts) do
+    do_defspecial(expr, ctx, opts)
   end
 
   defmacro defword(expr, effect, opts) do
@@ -47,15 +47,15 @@ defmodule SandCat.Core do
     end
   end
 
-  defp do_defspecial(expr, stack, env, opts) do
+  defp do_defspecial(expr, ctx, opts) do
     f_name = expr |> fun_name
     quote do
-      def unquote(f_name)(s, envi) do
-        (fn(unquote(stack), unquote(env)) ->
+      def unquote(f_name)(ctx_o) do
+        (fn(unquote(ctx)) ->
              unquote(opts[:do])
-         end).(s, envi)
+         end).(ctx_o)
       end
-      @words [{unquote(expr), &(__MODULE__.unquote(f_name)/2)}|@words]
+      @words [{unquote(expr), &(__MODULE__.unquote(f_name)/1)}|@words]
     end
   end
 
