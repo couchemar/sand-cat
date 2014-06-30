@@ -5,7 +5,8 @@ defmodule SandCat do
   @derive [Access]
   defstruct stack: [], vocabularies: []
 
-  def new(stack \\ []), do: struct(__MODULE__, stack: stack)
+  def new(stack \\ [], vocabularies \\ []),
+  do: struct(__MODULE__, stack: stack, vocabularies: vocabularies)
 
   def run(stack), do: run(stack, [Words.words])
 
