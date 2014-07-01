@@ -5,37 +5,50 @@ defmodule SandCat do
   @derive [Access]
   defstruct stack: [], vocabularies: []
 
-  def new(stack \\ []), do: struct(__MODULE__, stack: stack)
+  def new(stack \\ [], vocabularies \\ []),
+  do: struct(__MODULE__, stack: stack, vocabularies: vocabularies)
 
-  def run(stack) do
-    run(stack, Words.words)
+  def run(stack), do: run(stack, [Words.words])
+
+  def run(stack, vocabularies) do
+    compound(struct(__MODULE__, vocabularies: vocabularies), stack)
   end
 
-  def run(stack, vocabulary) do
-    compound(struct(__MODULE__), stack, vocabulary)
+  def compound(previous, stack), do: do_eval(previous, stack)
+
+  def compound(previous, stack, vocabularies) do
+    old_vocab = previous[:vocabularies]
+    previous = put_in(previous[:vocabularies], old_vocab ++ vocabularies)
+    do_eval(previous, stack)
   end
 
-  def compound(previous, stack) do
-    compound(previous, stack, Words.words)
+  defp do_eval(previous, stack) do
+    List.foldl(stack, previous, fn(w, ctx) -> add_or_apply(w, ctx) end)
   end
 
-  def compound(previous, stack, vocabulary) do
-    new_stack =  List.foldl(stack, previous[:stack], fn(a,b) -> add_or_apply(vocabulary, a, b) end)
-    put_in(previous[:stack], new_stack)
-  end
-
-  def add_or_apply(env, value, stack) do
-    case check_word(env, value) do
-      {true, apply_f} when is_function(apply_f, 2) ->
-        apply_f.(stack, env)
-      false -> [value|stack]
+  def add_or_apply(word, ctx) do
+    case check_word(ctx, word) do
+      {true, apply_f} when is_function(apply_f, 1) ->
+        apply_f.(ctx)
+      false -> add_to_stack(word, ctx)
     end
   end
 
-  defp check_word(env, word) do
-    case env |> List.keyfind(word, 0) do
-      {^word, f} -> {true, f}
-      nil -> false
+  defp check_word(ctx, word) do
+    search_word(word, ctx[:vocabularies])
+  end
+
+  defp add_to_stack(word, ctx) do
+    stack = ctx[:stack]
+    put_in(ctx[:stack], [word|stack])
+  end
+
+  defp search_word(_word, []), do: false
+  defp search_word(word, [{_name, vocab}|vocabs]) do
+    case List.keyfind(vocab, word, 0) do
+      {^word, f} ->
+        {true, f}
+      nil -> search_word(word, vocabs)
     end
   end
 
