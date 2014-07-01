@@ -1,7 +1,7 @@
 defmodule SandCat.Words do
   use SandCat.Core
 
-  alias SandCat, as: SC
+  alias SandCat.Core
 
   defprimitive :+, [a, b], do: [a + b]
   defprimitive :-, [a, b], do: [a - b]
@@ -20,9 +20,7 @@ defmodule SandCat.Words do
 
   defspecial :call, ctx do
     [callable|rest] = ctx[:stack]
-    new_ctx = put_in(ctx[:stack], rest)
-    callable
-    |> List.foldl(new_ctx, fn(val, ctx) -> SC.add_or_apply(val, ctx) end)
+    Core.do_eval(put_in(ctx[:stack], rest), callable)
   end
 
   defprimitive :dup, [a], do: [a, a]
