@@ -23,6 +23,10 @@ defmodule SandCat.Core do
     do_defspecial(expr, ctx, opts)
   end
 
+  defmacro defword!(expr, effect, opts) do
+    do_defword_scoped(expr, effect, opts)
+  end
+
   defmacro defword(expr, effect, opts) do
     do_defword(expr, effect, opts)
   end
@@ -58,7 +62,7 @@ defmodule SandCat.Core do
     end
   end
 
-  defp do_defword(expr, effect, opts) do
+  defp do_defword_scoped(expr, effect, opts) do
     f_name = expr |> fun_name
     args_len = length(effect)
     quote do
@@ -77,6 +81,14 @@ defmodule SandCat.Core do
     end
   end
 
+  defp do_defword(expr, effect, opts) do
+    f_name = expr |> fun_name
+    args_len = length(effect)
+    quote do
+      @words [{unquote(expr), {:word, unquote(opts[:do])}}|@words]
+    end
+  end
+
   defp fun_name(word),
   do: word |> Atom.to_string |> (&(&1 <> "_word")).() |> String.to_atom
 
@@ -88,6 +100,8 @@ defmodule SandCat.Core do
     case check_word(ctx, word) do
       {true, apply_f} when is_function(apply_f, 1) ->
         apply_f.(ctx)
+      {true, {word, quot}} ->
+        do_eval(ctx, quot)
       false -> add_to_stack(word, ctx)
     end
   end
