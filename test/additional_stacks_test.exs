@@ -2,15 +2,15 @@ defmodule AdditionalStacks do
   use ExUnit.Case, async: true
 
   test "init stack" do
-    res = SandCat.run([:test, :"set-stack"])
+    res = SandCat.run([:test, :stack])
     assert %{test: []} == res[:stacks]
     assert [] == res[:stack]
-    assert %{a: [], b: []} == SandCat.run([:a, :"set-stack",
-                                           :b, :"set-stack"])[:stacks]
+    assert %{a: [], b: []} == SandCat.run([:a, :stack,
+                                           :b, :stack])[:stacks]
   end
 
   test "push" do
-    res = SandCat.run([:test, :"set-stack", 1, 2, 3, :test, :"push-stack"])
+    res = SandCat.run([:test, :stack, 1, 2, 3, :test, :"push-stack"])
     assert %{test: [3]} == res[:stacks]
     assert [2, 1] == res[:stack]
     res = SandCat.compound(res, [:test, :"push-stack"])
@@ -19,8 +19,7 @@ defmodule AdditionalStacks do
   end
 
   test "pop" do
-    res = SandCat.run(
-                      [:test, :"set-stack",
+    res = SandCat.run([:test, :stack,
                        1, 2, 3,
                        :test, :"push-stack",
                        :test, :"push-stack",
