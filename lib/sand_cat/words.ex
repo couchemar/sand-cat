@@ -19,10 +19,7 @@ defmodule SandCat.Words do
   defprimitive :<=, [a, b], do: [a <= b]
 
   defspecial :call, ctx do
-    IO.inspect ctx
     [callable|rest] = ctx[:stack]
-    IO.inspect callable
-    IO.inspect rest
     Core.do_eval(put_in(ctx[:stack], rest), callable)
   end
 
@@ -56,8 +53,7 @@ defmodule SandCat.Words do
   defspecial :"pop-stack", ctx do
     [name|rest] = ctx[:stack]
     [v|stack] = ctx[:stacks][name]
-    put_in(ctx[:stacks][name], stack)
-    |> put_in(ctx[:stack], [v|rest])
+    put_in(ctx[:stack], [v|rest]) |> put_in([:stacks, name], stack)
   end
 
 end
