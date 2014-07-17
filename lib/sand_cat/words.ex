@@ -46,8 +46,7 @@ defmodule SandCat.Words do
 
   defspecial :"push-stack", ctx do
     [name, val|rest] = ctx[:stack]
-    ctx = put_in(ctx[:stack], rest)
-    update_in(ctx[:stacks][name], fn a -> [val|a] end)
+    put_in(ctx[:stack], rest)|> update_in([:stacks, name], fn a -> [val|a] end)
   end
 
   defspecial :"pop-stack", ctx do
