@@ -4,7 +4,7 @@ defmodule SandCat do
   alias SandCat.Core
 
   @derive [Access]
-  defstruct stack: [], vocabularies: []
+  defstruct stack: [], vocabularies: [], stacks: %{}
 
   def new(stack \\ [], vocabularies \\ []),
   do: struct(__MODULE__, stack: stack, vocabularies: vocabularies)

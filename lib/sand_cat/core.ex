@@ -81,9 +81,7 @@ defmodule SandCat.Core do
     end
   end
 
-  defp do_defword(expr, effect, opts) do
-    f_name = expr |> fun_name
-    args_len = length(effect)
+  defp do_defword(expr, _effect, opts) do
     quote do
       @words [{unquote(expr), {:word, unquote(opts[:do])}}|@words]
     end
@@ -100,7 +98,7 @@ defmodule SandCat.Core do
     case check_word(ctx, word) do
       {true, apply_f} when is_function(apply_f, 1) ->
         apply_f.(ctx)
-      {true, {word, quot}} ->
+      {true, {:word, quot}} ->
         do_eval(ctx, quot)
       false -> add_to_stack(word, ctx)
     end
