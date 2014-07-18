@@ -37,6 +37,8 @@ defmodule SandCat.Words do
     end
   end
 
+  defword :when, [], do: [:swap, [:call], [:drop], :if]
+
   defspecial :stack, ctx do
     [name|rest] = ctx[:stack]
     put_in(ctx[:stack], rest) |> put_in([:stacks, name], [])
