@@ -91,4 +91,9 @@ defmodule SandCatTest do
     assert [7] == test_stack([1, 2, :<, [4, 3, :+], [false, false], :if])
   end
 
+  test "When" do
+    assert [1] == test_stack([true, [1], :when])
+    assert [] == test_stack([false, [1], :when])
+  end
+
 end
